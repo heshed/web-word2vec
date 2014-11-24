@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Breeze Tests">
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" rel="stylesheet">
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/alertify.js/0.3.11/themes/alertify.bootstrap.css">
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/alertify.js/0.3.11/themes/alertify.core.css">
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/alertify.js/0.3.11/themes/alertify.default.css">
+
+<title>Word2vec</title>
+
+</head>
+
+<body>
+<div class="container">
+
+<div class="row">
+  <div class="col-lg-8">
+    <h3 class="btn-primary"> Word2Vec </h3>
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="input-group">
+    <span class="input-group-addon">Q</span>
+      <input type="text" class="form-control" id="q">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" type="button" id="distance">Distance</button>
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="input-group">
+      <span class="input-group-addon">Q1</span>
+      <input type="text" class="form-control" id="q1">
+      <span class="input-group-addon">Q2</span>
+      <input type="text" class="form-control" id="q2">
+      <span class="input-group-addon">Q3</span>
+      <input type="text" class="form-control" id="q3">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" type="button" id="word-analogy">Word-Analogy</button>
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
+<div class="row">
+  <div class="col-lg-8">
+    <p>
+    <div class="bg-success" id="success-result">
+      <pre class="bg-success" id="result-success">
+      </pre>
+    </div>
+    <div class="bg-danger" id="fail-result">
+      <pre class="bg-danger" id="result-danger">
+      </pre>
+    </div>
+    </p>
+  </div>
+</div><!-- /.row -->
+
+
+</div>
+
+<script src="http://cdn.jsdelivr.net/alertify.js/0.3.11/alertify.js"></script>
+<script src="http://cdn.jsdelivr.net/alertify.js/0.3.11/alertify.min.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+
+"use strict";
+
+$(document).ready(function() {
+    $("#success-result").hide();
+    $("#fail-result").hide();
+});
+
+function render_result(data) {
+  if (data["result"].indexOf("Out of dictionary word!") > 0) {
+   alertify.error("분석실패!!");
+   $("#result-danger").html(data["result"]);
+   $("#success-result").hide();
+   $("#fail-result").show();
+  } else {
+   alertify.success("분석완료!!");
+   $("#result-success").html(data["result"]);
+   $("#success-result").show();
+   $("#fail-result").hide();
+  }
+}
+
+$( "#distance" ).click(function() {
+    var query = $("#q").val();
+    alertify.log("작업이 진행중입니다..", "notification");
+    console.log(query);
+    $.getJSON( "/distance?q=" + query, function(data) {
+        render_result(data);
+    });
+});
+
+$( "#word-analogy" ).click(function() {
+    var q1 = $("#q1").val();
+    var q2 = $("#q2").val();
+    var q3 = $("#q3").val();
+    console.log(q1);
+    console.log(q2);
+    console.log(q3);
+    alertify.log("검색이 진행중입니다..", "notification");
+    $.getJSON( "/word-analogy?q1="+q1+"&q2="+q2+"&q3="+q3, function(data) {
+        render_result(data);
+    });
+});
+
+</script>
+
+</body>
+
+</html>
